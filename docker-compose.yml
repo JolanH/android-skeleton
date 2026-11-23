@@ -1,0 +1,20 @@
+# Optional emulator for visual review (CONSTRAINTS.md P3). Use ./dev.sh emulator.
+# Everything else runs through plain `docker run` in dev.sh; compose is only used here.
+services:
+  emulator:
+    profiles: ["emulator"]
+    image: skeleton-emulator:latest
+    build:
+      context: docker/emulator
+      args:
+        BASE_IMAGE: skeleton-dev:latest
+    devices:
+      - /dev/kvm:/dev/kvm
+    ports:
+      - "127.0.0.1:${SKELETON_NOVNC_PORT:-6080}:6080"
+    volumes:
+      - .:/workspace:ro
+      - skeleton-emulator-home:/home/emu
+
+volumes:
+  skeleton-emulator-home:

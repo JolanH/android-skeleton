@@ -1,0 +1,11 @@
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+.kotlin/
+captures/
+# Release signing material exists only on the release runner
+signing.properties
+*.keystore
+*.jks
