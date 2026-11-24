@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Constraint checks (canonical list and reasons: CONSTRAINTS.md). Everything runs in Docker.
-#   ./scripts/check.sh fast   floor guard + secrets in pending changes + ktlint      (edit loop)
-#   ./scripts/check.sh task   fast + unit tests + lint + Kover rules + changed-line coverage (task end)
+#   ./scripts/check.sh fast   floor guard + secrets in pending changes + ktlint + unit tests (edit loop)
+#   ./scripts/check.sh task   fast + lint + Kover rules + changed-line coverage (task end)
 #   ./scripts/check.sh full   task + debug APK + secrets over all history             (CI / before review)
 # Env: CHECK_BASE (default develop) = branch the diff is scoped against.
 set -euo pipefail
@@ -28,12 +28,14 @@ fast() {
   gitleaks git /repo --pre-commit --staged --redact --no-banner
   step "ktlint"
   "$ROOT/dev.sh" ktlintCheck
+  step "unit tests (never skipped, at any stage)"
+  "$ROOT/dev.sh" testDebugUnitTest
 }
 
 task() {
   fast
-  step "unit tests + Android lint + Kover report"
-  "$ROOT/dev.sh" testDebugUnitTest lintDebug koverXmlReportDebug
+  step "Android lint + Kover report"
+  "$ROOT/dev.sh" lintDebug koverXmlReportDebug
   step "coverage: changed lines >= 80% (vs $BASE), domain/ >= 90%"
   in_node scripts/changed-coverage.mjs --base "$BASE" --min 80 --package-min com/example/skeleton/domain=90
 }

@@ -10,8 +10,8 @@ Stages (`./scripts/check.sh <stage>`, everything in Docker, diff scoped against 
 
 | Stage | When | Runs |
 |-------|------|------|
-| `fast` | after each edit batch | floor guard, secrets in pending changes, ktlint |
-| `task` | before calling a task done | `fast` + unit tests, Android lint, Kover, coverage rules |
+| `fast` | after each edit batch | floor guard, secrets in pending changes, ktlint, unit tests |
+| `task` | before calling a task done | `fast` + Android lint, Kover, coverage rules |
 | `full` | before review / in CI | `task` + debug APK + secrets over full history |
 
 ## Floor (always enforced)
@@ -40,7 +40,7 @@ Stages (`./scripts/check.sh <stage>`, everything in Docker, diff scoped against 
 |-----------|------|-----------|---------|
 | Format | Zero ktlint errors (ktlint_official, max line 120) | `./dev.sh ktlintCheck` | fast |
 | Android lint | Zero errors (`abortOnError = true`) | `./dev.sh lintDebug` | task, CI |
-| Tests | All unit + Robolectric tests pass | `./dev.sh testDebugUnitTest` | task, CI |
+| Tests | All unit + Robolectric tests pass | `./dev.sh testDebugUnitTest` | fast, task, CI |
 | Coverage: changed lines | ≥ 80% of changed executable lines covered | `scripts/changed-coverage.mjs --min 80` on Kover XML | task, CI |
 | Coverage: domain | `com.example.skeleton.domain` ≥ 90% line coverage | `scripts/changed-coverage.mjs --package-min com/example/skeleton/domain=90` | task, CI |
 | Secrets | Zero gitleaks findings | `gitleaks git --redact` (Docker `zricethezav/gitleaks:v8.21.2`) | fast, full |
