@@ -22,7 +22,7 @@ What the app does, for whom, and why. One paragraph.
 - Format: `./dev.sh ktlintFormat`
 - Screenshots: `./dev.sh recordRoborazziDebug` / `./dev.sh verifyRoborazziDebug`
 - Quality bar: `./scripts/check.sh fast|task|full`
-- Emulator: `./dev.sh emulator`
+- Emulator (human review only, not in the quality gate): `./scripts/review-emulator.sh`
 
 ## Project structure
 - `app/src/main/java/<package>/domain/` pure Kotlin logic (no Android imports, ≥ 90% coverage)

@@ -22,9 +22,9 @@ Stages (`./scripts/check.sh <stage>`, everything in Docker, diff scoped against 
 - P2 Test-first: for every behaviour change, write the test first, run it and see it fail for the expected reason, then implement until green, then refactor with tests green. Bug fixes start with a test that reproduces the bug.
   Why: the tests are the spec of the behaviour; a test written after the code tends to assert what the code does, not what it should do.
   Checked by: `floor-guard` `no-test-for-change` (production Kotlin changed with no test change in the same diff). The red-then-green order itself is a working rule: report the failing run before the implementation.
-- P3 Simulated review: the supervisor can always assess UI, UX and behaviour without a phone. (a) `./dev.sh emulator` starts a Pixel 8 / API 34 emulator viewable in the browser (noVNC) with the current debug APK installed; it must keep working on every branch. (b) Every UI change (`ui/`, `widget/`) adds or updates Roborazzi screenshot tests (light + dark), which CI publishes as an artifact. (c) A UI task is not done until it has been launched in the emulator.
-  Why: the supervisor reviews behaviour, not just code, and doesn't want to install every build on a phone.
-  Checked by: `floor-guard` `ui-without-screenshot` (active while `app/src/test/java/<package>/screenshots/` exists); `./dev.sh emulator` smoke run.
+- P3 Simulated review: the supervisor can always assess UI, UX and behaviour without a phone. (a) `./scripts/review-emulator.sh` (same as `./dev.sh emulator`) starts a Pixel 8 / API 34 emulator viewable in the browser (noVNC) with the current debug APK installed. It is run by the supervisor at points of their choosing; it is not part of `check.sh`, CI or the agent's definition of done. (b) Every UI change (`ui/`, `widget/`) adds or updates Roborazzi screenshot tests (light + dark), which CI publishes as an artifact.
+  Why: the supervisor reviews behaviour, not just code, and doesn't want to install every build on a phone; the emulator is too slow to run on every task.
+  Checked by: `floor-guard` `ui-without-screenshot` (active while `app/src/test/java/<package>/screenshots/` exists).
 - No secrets in source or history (signing keys live only in GitHub Secrets).
   Checked by: gitleaks `--redact` in `check.sh fast` and `full`.
 - No new suppressions: `@Suppress`, `@SuppressLint`, `ktlint-disable`, `tools:ignore`, `noinspection`, `gitleaks:allow`, Kover excludes, lint baselines.
